@@ -21,6 +21,12 @@ public class AchievementService {
     }
 
     @Transactional
+    public void incrementProgress(AchievementProgress achievementProgress) {
+        achievementProgress.increment();
+        achievementProgressRepository.save(achievementProgress);
+    }
+
+    @Transactional
     public void giveAchievement(long userId, Achievement achievement) {
         userAchievementRepository.save(UserAchievement.builder().achievement(achievement).userId(userId).build());
     }
