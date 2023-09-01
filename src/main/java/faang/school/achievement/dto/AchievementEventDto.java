@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class AchievementEventDto {
-
-    private Long userId;
+    private long achievementId;
+    private long receiverId;
     private String achievementTitle;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventTime;
+    private LocalDateTime achievedAt;
 }

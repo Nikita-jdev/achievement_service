@@ -1,12 +1,12 @@
 package faang.school.achievement.handler;
 
-import faang.school.achievement.dto.EventDto;
+import faang.school.achievement.dto.EventPostDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public abstract class PostAchievementHandler implements EventHandler {
-
+public abstract class PostAchievementHandler implements EventHandler<EventPostDto> {
     @Override
-    public void handle(EventDto eventDto) {
+    public void handle(EventPostDto event) {
+
     }
 }

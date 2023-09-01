@@ -1,7 +1,5 @@
 package faang.school.achievement.handler;
 
-import faang.school.achievement.cache.AchievementCache;
-import faang.school.achievement.dto.EventDto;
 import faang.school.achievement.dto.EventPostDto;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.service.AchievementService;
@@ -16,24 +14,22 @@ import org.springframework.stereotype.Component;
 public class OpinionLeaderAchievementHandler extends PostAchievementHandler {
 
     private final AchievementService service;
-    private final AchievementCache cache;
     private final String ACHIEVEMENT_TITTLE = "Opinion leader";
 
     @Async("threadPoolForAchievementHandler")
     @Override
-    public void handle(EventDto eventDto) {
-        EventPostDto postDto = (EventPostDto) eventDto;
-        Achievement achievement = cache.get(ACHIEVEMENT_TITTLE).orElseThrow();
+    public void handle(EventPostDto postDto) {
+        Achievement achievement = service.getAchievement(ACHIEVEMENT_TITTLE);
         long authorId = getIfOfPostAuthor(postDto);
         long achievementId = achievement.getId();
 
         if (!service.hasAchievement(authorId, achievementId)) {
-            service.createProgressIfNecessary(achievementId, authorId);
+            service.checkAndCreateAchievementProgress(authorId, achievementId);
         }
 
         long progress = service.getProgress(authorId, achievementId);
         if (achievement.getPoints() >= progress) {
-            service.giveAchievement(authorId, achievementId);
+            service.giveAchievement(authorId, ACHIEVEMENT_TITTLE);
         }
     }
 

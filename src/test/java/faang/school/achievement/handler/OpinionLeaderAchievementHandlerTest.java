@@ -1,6 +1,5 @@
 package faang.school.achievement.handler;
 
-import faang.school.achievement.cache.AchievementCache;
 import faang.school.achievement.dto.EventPostDto;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.service.AchievementService;
@@ -11,17 +10,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class OpinionLeaderAchievementHandlerTest {
 
     @Mock
     private AchievementService achievementService;
-    @Mock
-    private AchievementCache achievementCache;
+
     @InjectMocks
     private OpinionLeaderAchievementHandler achievementHandler;
 
@@ -46,22 +43,22 @@ public class OpinionLeaderAchievementHandlerTest {
 
     @Test
     void testHandle() {
-        when(achievementCache.get(ACHIEVEMENT_TITTLE)).thenReturn(Optional.ofNullable(achievement));
+        when(achievementService.getAchievement(ACHIEVEMENT_TITTLE)).thenReturn(achievement);
         when(achievementService.hasAchievement(AUTHOR_ID, ACHIEVEMENT_ID)).thenReturn(true);
         when(achievementService.getProgress(AUTHOR_ID, ACHIEVEMENT_ID)).thenReturn(ACHIEVEMENT_POINTS);
 
         achievementHandler.handle(postDto);
-        verify(achievementService).giveAchievement(AUTHOR_ID, ACHIEVEMENT_ID);
+        verify(achievementService).giveAchievement(AUTHOR_ID, ACHIEVEMENT_TITTLE);
     }
 
     @Test
     void testHandleWithCreateProgress() {
-        when(achievementCache.get(ACHIEVEMENT_TITTLE)).thenReturn(Optional.ofNullable(achievement));
+        when(achievementService.getAchievement(ACHIEVEMENT_TITTLE)).thenReturn(achievement);
         when(achievementService.hasAchievement(AUTHOR_ID, ACHIEVEMENT_ID)).thenReturn(false);
         when(achievementService.getProgress(AUTHOR_ID, ACHIEVEMENT_ID)).thenReturn(ACHIEVEMENT_POINTS);
 
         achievementHandler.handle(postDto);
-        verify(achievementService).giveAchievement(AUTHOR_ID, ACHIEVEMENT_ID);
-        verify(achievementService).createProgressIfNecessary(ACHIEVEMENT_ID, AUTHOR_ID);
+        verify(achievementService).giveAchievement(AUTHOR_ID, ACHIEVEMENT_TITTLE);
+        verify(achievementService).checkAndCreateAchievementProgress(ACHIEVEMENT_ID, ACHIEVEMENT_ID);
     }
 }

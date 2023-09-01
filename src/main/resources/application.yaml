@@ -43,3 +43,13 @@ logging:
 project-service:
   host: localhost
   port: 8082
+
+achievement-service:
+  follower-handler:
+    thread-pool:
+      corePoolSize: 1
+      maximumPoolSize: 10
+      keepAliveTime: 0
+  achievement:
+    followers:
+      name: subscribers
