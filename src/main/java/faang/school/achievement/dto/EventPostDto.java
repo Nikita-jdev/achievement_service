@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EventPostDto implements EventDto {
+public class EventPostDto {
 
     private Long postId;
     private Long authorId;

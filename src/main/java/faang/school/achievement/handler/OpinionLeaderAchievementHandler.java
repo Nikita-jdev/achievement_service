@@ -1,40 +1,29 @@
 package faang.school.achievement.handler;
 
-import faang.school.achievement.cache.AchievementCache;
-import faang.school.achievement.dto.EventDto;
 import faang.school.achievement.dto.EventPostDto;
-import faang.school.achievement.model.Achievement;
 import faang.school.achievement.service.AchievementService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-@EnableAsync
-public class OpinionLeaderAchievementHandler extends PostAchievementHandler {
+public class OpinionLeaderAchievementHandler extends AbstractAchievementHandler<EventPostDto> {
 
-    private final AchievementService service;
-    private final AchievementCache cache;
+    private final ThreadPoolTaskExecutor postEventThreadPoolExecutor;
     private final String ACHIEVEMENT_TITTLE = "Opinion leader";
 
-    @Async("threadPoolForAchievementHandler")
+    @Autowired
+    public OpinionLeaderAchievementHandler(AchievementService achievementService, ThreadPoolTaskExecutor postEventThreadPoolExecutor) {
+        super(achievementService);
+        this.postEventThreadPoolExecutor = postEventThreadPoolExecutor;
+    }
+
     @Override
-    public void handle(EventDto eventDto) {
-        EventPostDto postDto = (EventPostDto) eventDto;
-        Achievement achievement = cache.get(ACHIEVEMENT_TITTLE).orElseThrow();
-        long authorId = getIfOfPostAuthor(postDto);
-        long achievementId = achievement.getId();
-
-        if (!service.hasAchievement(authorId, achievementId)) {
-            service.createProgressIfNecessary(achievementId, authorId);
-        }
-
-        long progress = service.getProgress(authorId, achievementId);
-        if (achievement.getPoints() >= progress) {
-            service.giveAchievement(authorId, achievementId);
-        }
+    public void handle(EventPostDto postDto) {
+        postEventThreadPoolExecutor.execute(() -> {
+            long userId = getIfOfPostAuthor(postDto);
+            handleAchievement(userId, ACHIEVEMENT_TITTLE);
+        });
     }
 
     private long getIfOfPostAuthor(EventPostDto postDto) {

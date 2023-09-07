@@ -17,7 +17,7 @@ public class RedisPublisherConfig {
     private String host;
     @Value("${spring.data.redis.port}")
     private int port;
-    @Value("${spring.data.redis.channel.achievement}")
+    @Value("${spring.data.redis.channels.achievement}")
     private String achievementTopicName;
 
     @Bean
