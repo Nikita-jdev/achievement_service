@@ -25,6 +25,7 @@ spring:
         achievement: achievement_channel
         follower: follower_channel
         post: post_channel
+        mentorship: mentorship_channel
 
 async:
   thread-pool:
@@ -53,3 +54,10 @@ achievement-service:
   achievement:
     followers:
       name: subscribers
+    mentorship:
+      name: sensei
+  mentorship-handler:
+    thread-pool:
+      corePoolSize: 1
+      maximumPoolSize: 10
+      keepAliveTime: 0

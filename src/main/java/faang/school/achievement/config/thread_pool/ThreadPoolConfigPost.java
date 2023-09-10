@@ -1,4 +1,4 @@
-package faang.school.achievement.config;
+package faang.school.achievement.config.thread_pool;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableAsync
-public class SpringAsyncConfig {
+public class ThreadPoolConfigPost {
 
     @Value("${async.thread-pool.settings.core-pool-size}")
     private int corePoolSize;

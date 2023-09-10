@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class ThreadPoolConfig {
+public class ThreadPoolConfigFollower {
 
     @Value("${achievement-service.follower-handler.thread-pool.corePoolSize}")
     private int corePoolSize;
