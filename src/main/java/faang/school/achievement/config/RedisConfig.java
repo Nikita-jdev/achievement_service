@@ -26,6 +26,8 @@ public class RedisConfig {
     private String skillChannel;
     @Value("${spring.data.redis.channels.mentorship_channel}")
     private String mentorshipChannel;
+    @Value("${spring.data.redis.channels.post_channel.name}")
+    private String postChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -44,6 +46,11 @@ public class RedisConfig {
         return new MessageListenerAdapter(mentorshipEventListener);
     }
 
+    @Bean(name = "postAdapter")
+    public MessageListenerAdapter postAdapter(MentorshipStartEventListener postEventListener) {
+        return new MessageListenerAdapter(postEventListener);
+    }
+
     @Bean
     public ChannelTopic skillTopic() {
         return new ChannelTopic(skillChannel);
@@ -54,13 +61,19 @@ public class RedisConfig {
         return new ChannelTopic(mentorshipChannel);
     }
 
+    public ChannelTopic postTopic() {
+        return new ChannelTopic(postChannel);
+    }
+
     @Bean
     public RedisMessageListenerContainer redisContainer(@Qualifier("skillAdapter") MessageListenerAdapter skillAdapter,
-                                                        @Qualifier("mentorshipAdapter") MessageListenerAdapter mentorshipAdapter) {
+                                                        @Qualifier("mentorshipAdapter") MessageListenerAdapter mentorshipAdapter,
+                                                        @Qualifier("postAdapter") MessageListenerAdapter postAdapter) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
         container.addMessageListener(skillAdapter, skillTopic());
         container.addMessageListener(mentorshipAdapter, mentorshipTopic());
+        container.addMessageListener(postAdapter, postTopic());
         return container;
     }
 }
