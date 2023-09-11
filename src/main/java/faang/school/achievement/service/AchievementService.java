@@ -17,9 +17,12 @@ import faang.school.achievement.repository.AchievementRepository;
 import faang.school.achievement.repository.UserAchievementRepository;
 import faang.school.achievement.service.filter.AchievementFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -71,7 +74,38 @@ public class AchievementService {
                 .orElseThrow(() -> new DataValidationException("Achievement by ID: " + achievementId + " not found"));
     }
 
-    private Stream<Achievement> toStream(Iterable<Achievement> achievementIterable){
+    private Stream<Achievement> toStream(Iterable<Achievement> achievementIterable) {
         return StreamSupport.stream(achievementIterable.spliterator(), false);
+    }
+
+    public boolean hasAchievement(long userId, long achievementId) {
+        return userAchievementRepository.existsByUserIdAndAchievementId(userId, achievementId);
+    }
+
+    public Achievement getAchievementByTitle(String title) {
+        return achievementCache.get(title);
+    }
+
+    public Optional<AchievementProgress> getAchievementProgress(long userId, long achievementId) {
+        return achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId);
+    }
+
+    @Transactional
+    public AchievementProgress createAchievementProgressIfNecessary(AchievementProgress achievementProgress) {
+        return achievementProgressRepository.save(achievementProgress);
+    }
+
+    @Transactional
+    public AchievementProgress updateAchievementProgress(AchievementProgress achievementProgress) {
+        return achievementProgressRepository.save(achievementProgress);
+    }
+
+    @Transactional
+    public void giveAchievement(UserAchievement userAchievement) {
+        try {
+            userAchievementRepository.save(userAchievement);
+        } catch (OptimisticLockingFailureException e) {
+            throw new OptimisticLockingFailureException("Error of optimistic locking when issuing achievements");
+        }
     }
 }

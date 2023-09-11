@@ -24,8 +24,9 @@ spring:
       channel:
         achievement: achievement_channel
         follower: follower_channel
+        goal_channel:
+          name: goal_channel
         mentorship: mentorship_channel
-
 
 server:
   port: 8085
@@ -37,3 +38,9 @@ logging:
 project-service:
   host: localhost
   port: 8082
+
+
+achievements:
+  goal:
+    collector:
+      title: Собиратор
