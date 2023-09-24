@@ -31,6 +31,8 @@ spring:
         mentorship_channel: mentorship_channel
         task_channel:
           name: task_channel
+        comment_channel:
+          name: comment-channel
         invite_channel:
           name: invite_channel
         profile_pic_channel:
