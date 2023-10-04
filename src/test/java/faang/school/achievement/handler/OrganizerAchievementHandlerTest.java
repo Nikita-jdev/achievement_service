@@ -1,4 +1,4 @@
-package faang.school.achievement.hundler;
+package faang.school.achievement.handler;
 
 import faang.school.achievement.dto.InviteSentEventDto;
 import faang.school.achievement.model.Achievement;

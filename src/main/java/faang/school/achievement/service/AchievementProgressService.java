@@ -11,15 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AchievementProgressService {
 
     private final AchievementProgressRepository achievementProgressRepository;
 
+    @Transactional
     @Retryable(retryFor = DataIntegrityViolationException.class)
     public AchievementProgress getProgress(long userId, long achievementId) {
         return achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId)
-                .orElse(createProgress(fillAchievementProgress(userId, achievementId)));
+                .orElseGet(() -> createProgress(fillAchievementProgress(userId, achievementId)));
     }
 
     @Transactional

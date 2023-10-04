@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RecommendationEventDto {
-    private int authorId;
-    private int receiverId;
+    private long authorId;
+    private long receiverId;
     private String content;
 }
