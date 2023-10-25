@@ -26,12 +26,11 @@ spring:
         follower: follower_channel
         recommendation: recommendation_channel
         invite: invitation-channel
+        skill: skill-channel
 
+  config:
+    import: classpath:resource_achievement/achievement.yaml
 
-config:
-  import: classpath:achievement/achievement.yaml
-          classpath:resource_achievement/achievement.yaml
-  
   async_config:
     core_pool_size: 5
     max_pool_size: 10

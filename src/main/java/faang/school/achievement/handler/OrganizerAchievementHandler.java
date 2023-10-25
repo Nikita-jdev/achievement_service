@@ -1,5 +1,6 @@
-package faang.school.achievement.hundler;
+package faang.school.achievement.handler;
 
+import faang.school.achievement.dto.InviteSentEventDto;
 import faang.school.achievement.service.AchievementProgressService;
 import faang.school.achievement.service.AchievementService;
 import faang.school.achievement.service.UserAchievementService;
@@ -8,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OrganizerAchievementHandler extends AbstractHandler {
+public class OrganizerAchievementHandler extends AbstractHandler<InviteSentEventDto> {
 
     @Autowired
     public OrganizerAchievementHandler(AchievementService achievementService,

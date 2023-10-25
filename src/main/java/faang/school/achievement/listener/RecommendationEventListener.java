@@ -11,10 +11,10 @@ import java.util.List;
 
 @Component
 public class RecommendationEventListener extends AbstractEventListener<RecommendationEventDto> {
-    private final List<EventHandler> eventHandlers;
+    private final List<EventHandler<RecommendationEventDto>> eventHandlers;
 
     @Autowired
-    public RecommendationEventListener(ObjectMapper objectMapper, List<EventHandler> eventHandlers) {
+    public RecommendationEventListener(ObjectMapper objectMapper, List<EventHandler<RecommendationEventDto>> eventHandlers) {
         super(objectMapper);
         this.eventHandlers = eventHandlers;
     }
@@ -22,6 +22,6 @@ public class RecommendationEventListener extends AbstractEventListener<Recommend
     @Override
     public void onMessage(Message message, byte[] pattern) {
         RecommendationEventDto event = convertJsonToString(message, RecommendationEventDto.class);
-        eventHandlers.forEach(handler -> handler.handle(event));
+        eventHandlers.forEach(handler -> handler.handle(event.getAuthorId()));
     }
 }

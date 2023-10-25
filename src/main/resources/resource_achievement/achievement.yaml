@@ -1,4 +1,6 @@
 invite:
   title: Организатор
-  description: Пригласить в проекты 100 человек
-  points: 100
+niceGuy:
+  title: Просто душка
+skiller:
+  title: Скиловый перец

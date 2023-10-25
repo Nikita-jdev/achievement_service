@@ -1,4 +1,4 @@
-package faang.school.achievement.hundler;
+package faang.school.achievement.handler;
 
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
@@ -12,7 +12,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 
 @AllArgsConstructor
-public abstract class AbstractHandler implements EventHandler {
+public abstract class AbstractHandler<T> implements EventHandler<T> {
 
     private AchievementService achievementService;
     private UserAchievementService userAchievementService;
@@ -25,7 +25,7 @@ public abstract class AbstractHandler implements EventHandler {
     public void handle(Long userId) {
         Achievement achievement = achievementService.getAchievement(title);
 
-        boolean existsAchievement = userAchievementService.hasAchievement(achievement.getId(), userId);
+        boolean existsAchievement = userAchievementService.hasAchievement(userId, achievement.getId());
 
         if (!existsAchievement) {
             AchievementProgress achievementProgress = achievementProgressService.getProgress(userId, achievement.getId());

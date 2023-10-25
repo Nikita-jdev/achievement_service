@@ -1,6 +1,6 @@
 package faang.school.achievement.handler;
 
-import faang.school.achievement.dto.RecommendationEventDto;
+import faang.school.achievement.dto.SkillAcquiredEventDto;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.Rarity;
@@ -15,8 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
 @ExtendWith(MockitoExtension.class)
-class NiceGuyAchievementHandlerTest {
+public class WhoeverAchievementHandlerTest {
     @Mock
     private AchievementService achievementService;
     @Mock
@@ -24,14 +25,14 @@ class NiceGuyAchievementHandlerTest {
     @Mock
     private AchievementProgressService achievementProgressService;
 
-    private final String titleAchievement = "Просто душка";
+    private final String titleAchievement = "Скиловый перец";
 
     private Achievement achievement;
-    private RecommendationEventDto recommendationEventDto;
+    private SkillAcquiredEventDto skillAcquiredEventDto;
     private AchievementProgress achievementProgress;
     @InjectMocks
-    private NiceGuyAchievementHandler niceGuyAchievementHandler =
-            new NiceGuyAchievementHandler(achievementService, userAchievementService, achievementProgressService, titleAchievement);
+    private WhoeverAchievementHandler whoeverAchievementHandler =
+            new WhoeverAchievementHandler(achievementService, userAchievementService, achievementProgressService, titleAchievement);
 
     @BeforeEach
     public void init() {
@@ -41,16 +42,15 @@ class NiceGuyAchievementHandlerTest {
                 .rarity(Rarity.RARE)
                 .build();
 
-        recommendationEventDto = RecommendationEventDto.builder()
-                .authorId(1)
-                .receiverId(2)
-                .content("Something nice")
+        skillAcquiredEventDto = SkillAcquiredEventDto.builder()
+                .skillId(7L)
+                .receiverId(9L)
                 .build();
 
         achievementProgress = AchievementProgress.builder()
                 .id(1L)
                 .achievement(achievement)
-                .userId(recommendationEventDto.getAuthorId())
+                .userId(2L)
                 .currentPoints(9)
                 .version(1L)
                 .build();
@@ -60,19 +60,19 @@ class NiceGuyAchievementHandlerTest {
     void testHandler() {
         Mockito.when(achievementService.getAchievement(titleAchievement)).thenReturn(achievement);
 
-        Mockito.when(userAchievementService.hasAchievement(recommendationEventDto.getAuthorId(), achievement.getId())).thenReturn(false);
+        Mockito.when(userAchievementService.hasAchievement(skillAcquiredEventDto.getReceiverId(), achievement.getId())).thenReturn(false);
 
-        Mockito.when(achievementProgressService.getProgress(recommendationEventDto.getAuthorId(), achievement.getId()))
+        Mockito.when(achievementProgressService.getProgress(skillAcquiredEventDto.getReceiverId(), achievement.getId()))
                 .thenReturn(achievementProgress);
 
         achievementProgress.increment();
 
         Mockito.when(achievementProgressService.updateProgress(achievementProgress)).thenReturn(achievementProgress);
-        Mockito.when(userAchievementService.hasAchievement(recommendationEventDto.getAuthorId(), achievement.getId())).thenReturn(false);
+        Mockito.when(userAchievementService.hasAchievement(skillAcquiredEventDto.getReceiverId(), achievement.getId())).thenReturn(false);
 
-        niceGuyAchievementHandler.handle(recommendationEventDto.getAuthorId());
+        whoeverAchievementHandler.handle(skillAcquiredEventDto.getReceiverId());
 
         Mockito.verify(userAchievementService, Mockito.times(1))
-                .hasAchievement(recommendationEventDto.getAuthorId(), achievement.getId());
+                .hasAchievement(skillAcquiredEventDto.getReceiverId(), achievement.getId());
     }
 }
