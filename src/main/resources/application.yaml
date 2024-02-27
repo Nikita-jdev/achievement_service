@@ -22,8 +22,12 @@ spring:
       port: 6379
       host: localhost
       channel:
-        achievement: achievement_channel
-        follower: follower_channel
+        achievement:
+          name: achievement_channel
+        follower:
+          name: follower_channel
+        team_channel:
+          name: team_channel
 
 server:
   port: 8085
@@ -35,3 +39,12 @@ logging:
 project-service:
   host: localhost
   port: 8082
+
+achievement-service:
+  achievement_manager: MANAGER
+
+async:
+  corePoolSize: 10
+  maxPoolSize: 15
+  queueCapacity: 1000
+  threadName: Async-Executor-
