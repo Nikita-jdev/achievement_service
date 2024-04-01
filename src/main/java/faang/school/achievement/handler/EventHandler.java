@@ -1,6 +1,9 @@
 package faang.school.achievement.handler;
 
-public interface EventHandler<T> {
+import org.springframework.scheduling.annotation.Async;
 
-    void handle(Long userId);
+public interface EventHandler<T> {
+    @Async("taskExecutor")
+    void handle(T event);
+
 }
