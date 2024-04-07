@@ -11,6 +11,4 @@ public interface AchievementMapper {
     @Mapping(target = "userAchievementIds", ignore = true)
     @Mapping(target = "progressIds", ignore = true)
     AchievementDto toDto (Achievement achievement);
-
-    Achievement toEntity (AchievementDto achievementDto);
 }

@@ -22,9 +22,7 @@ spring:
       port: 6379
       host: localhost
       channel:
-        achievement: achievement_channel
         follower: follower_channel
-        post_channel: post_channel
 
 server:
   port: 8085
@@ -37,7 +35,6 @@ project-service:
   host: localhost
   port: 8082
 
-async:
-  maxPoolSize: 20
-  corePoolSize: 10
-  queueCapacity: 15
+user-service:
+  host: localhost
+  port: 8080
