@@ -33,6 +33,13 @@ logging:
   level:
     root: info
 
+achievement:
+  profile_pic:
+    handsome: "HANDSOME"
+
+thread-pool:
+  size: 10
+
 project-service:
   host: localhost
   port: 8082

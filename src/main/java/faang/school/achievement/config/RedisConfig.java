@@ -1,5 +1,6 @@
 package faang.school.achievement.config;
 
+import faang.school.achievement.subscriber.ProfilePicEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
+    private final ProfilePicEventListener profilePicEventListener;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.port}")
@@ -29,13 +31,13 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic profileViewTopic(){
+    public ChannelTopic profileViewTopic() {
         return new ChannelTopic(profileViewChannel);
     }
 
     @Bean
-    public MessageListenerAdapter profileViewEventListenerAdapter(){
-        return new MessageListenerAdapter(profileViewEventListener);
+    public MessageListenerAdapter profileViewEventListenerAdapter() {
+        return new MessageListenerAdapter(profilePicEventListener);
     }
 
     @Bean
