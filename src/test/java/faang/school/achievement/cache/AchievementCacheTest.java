@@ -2,7 +2,7 @@ package faang.school.achievement.cache;
 
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.repository.AchievementRepository;
-
+import faang.school.achievement.model.Rarity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,52 +10,73 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AchievementCacheTest {
-    @Mock
-    private AchievementRepository achievementRepository;
-
     @InjectMocks
     private AchievementCache achievementCache;
 
+    @Mock
+    private AchievementRepository achievementRepository;
+
     @Test
-    void goalAchievementCacheTest() {
-        HashMap<String, Achievement> achievementHashMap = new HashMap<>();
-        Achievement firstAchievement = Achievement.builder()
-                .title("firstAchievement")
-                .build();
-        Achievement secondAchievement = Achievement.builder()
-                .title("secondAchievement")
-                .build();
+    public void testInit() throws NoSuchFieldException {
+        Achievement achievement1 = Achievement.builder().title("Title 1")
+                .description("Description1")
+                .rarity(Rarity.COMMON)
+                .points(2L).build();
+        Achievement achievement2 = Achievement.builder().title("Title 2")
+                .description("Description2")
+                .rarity(Rarity.COMMON)
+                .points(2L).build();
+        List<Achievement> achievements = Arrays.asList(achievement1, achievement2);
 
-        List<Achievement> achievementsList = List.of(firstAchievement, secondAchievement);
-        achievementsList.forEach(achievement -> achievementHashMap.put(achievement.getTitle(), achievement));
-        when(achievementRepository.findAll()).thenReturn(List.of(firstAchievement, secondAchievement));
+        when(achievementRepository.findAll()).thenReturn(achievements);
 
-        assertDoesNotThrow(() -> achievementCache.init());
+        achievementCache.init();
+
+        Field achievementsField = AchievementCache.class.getDeclaredField("achievements");
+        achievementsField.setAccessible(true);
+        Map<String, Achievement> cachedAchievements = achievements.stream().collect(Collectors.toMap(Achievement::getTitle, Function.identity()));
+        assertEquals(2, cachedAchievements.size());
+        assertTrue(cachedAchievements.containsKey("Title 1"));
+        assertTrue(cachedAchievements.containsKey("Title 2"));
     }
 
     @Test
-    void getAchievementTest() throws IllegalAccessException, NoSuchFieldException {
-        HashMap<String, Achievement> achievementHashMap = new HashMap<>();
-        Achievement firstAchievement = Achievement.builder()
-                .title("firstAchievement")
-                .build();
-        Achievement secondAchievement = Achievement.builder()
-                .title("secondAchievement")
-                .build();
-        achievementHashMap.put(firstAchievement.getTitle(), firstAchievement);
-        achievementHashMap.put(secondAchievement.getTitle(), secondAchievement);
-        Field field = achievementCache.getClass().getDeclaredField("achievements");
-        field.setAccessible(true);
-        field.set(achievementCache, achievementHashMap);
+    public void testGetExistingAchievement() throws NoSuchFieldException, IllegalAccessException {
+        Achievement achievement = Achievement.builder().title("Title")
+                .description("Description")
+                .rarity(Rarity.COMMON)
+                .points(2L).build();
+        Map<String, Achievement> cachedAchievements = new HashMap<>();
+        cachedAchievements.put("Title", achievement);
+        setPrivateField(achievementCache, "achievements", cachedAchievements);
 
-        assertEquals(firstAchievement, achievementCache.get(firstAchievement.getTitle()).get());
+        Optional<Achievement> result = achievementCache.get("Title");
+
+        assertTrue(result.isPresent());
+        assertEquals(achievement, result.get());
+    }
+
+    @Test
+    public void testGetNonExistingAchievement() {
+        Optional<Achievement> result = achievementCache.get("Non-existent Title");
+
+        assertFalse(result.isPresent());
+    }
+
+    private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = object.getClass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
     }
 }
