@@ -44,7 +44,7 @@ public class CollectorAchievementHandlerTest {
                 .build();
 
 
-        when(achievementCache.getAchievement(anyString())).thenReturn(Optional.of(Achievement.builder()
+        when(achievementCache.get(anyString())).thenReturn(Optional.of(Achievement.builder()
                 .title("collector")
                 .id(2).build()));
         when(achievementService.hasAchievement(anyLong(), anyLong())).thenReturn(false);

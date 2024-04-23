@@ -38,7 +38,7 @@ public class AchievementCacheTest {
         achievementsList.forEach(achievement -> achievementHashMap.put(achievement.getTitle(), achievement));
         when(achievementRepository.findAll()).thenReturn(List.of(firstAchievement, secondAchievement));
 
-        assertDoesNotThrow(() -> achievementCache.goalAchievementCache());
+        assertDoesNotThrow(() -> achievementCache.init());
     }
 
     @Test
@@ -52,10 +52,10 @@ public class AchievementCacheTest {
                 .build();
         achievementHashMap.put(firstAchievement.getTitle(), firstAchievement);
         achievementHashMap.put(secondAchievement.getTitle(), secondAchievement);
-        Field field = achievementCache.getClass().getDeclaredField("achievementHash");
+        Field field = achievementCache.getClass().getDeclaredField("achievements");
         field.setAccessible(true);
         field.set(achievementCache, achievementHashMap);
 
-        assertEquals(firstAchievement, achievementCache.getAchievement(firstAchievement.getTitle()).get());
+        assertEquals(firstAchievement, achievementCache.get(firstAchievement.getTitle()).get());
     }
 }

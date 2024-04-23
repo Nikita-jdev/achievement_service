@@ -28,7 +28,7 @@ public class CollectorAchievementHandler implements EventHandler<GoalSetEvent> {
     @Async("executorService")
     @Transactional
     public void handle(GoalSetEvent goalSetEvent) {
-        Achievement achievement = achievementCache.getAchievement(achievementTitle)
+        Achievement achievement = achievementCache.get(achievementTitle)
                 .orElseThrow(() -> new EntityNotFoundException("Achievement not found"));
         long userId = goalSetEvent.getUserId();
         long achievementId = achievement.getId();
