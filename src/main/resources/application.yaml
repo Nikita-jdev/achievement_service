@@ -24,20 +24,6 @@ spring:
       channel:
         achievement: achievement_channel
         follower: follower_channel
-    kafka:
-      port: 9092
-      host: localhost
-      group-id: achievement_service
-      channels:
-        comment-channel:
-          name: comment_event_channel
-
-achievements:
-  comment:
-    expert: EXPERT
-
-thread-pool:
-  size: 10
 
 server:
   port: 8085
