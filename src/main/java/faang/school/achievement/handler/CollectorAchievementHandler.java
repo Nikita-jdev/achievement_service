@@ -35,7 +35,7 @@ public class CollectorAchievementHandler implements EventHandler<GoalSetEvent> {
         if (!achievementService.hasAchievement(userId, achievementId)) {
             achievementService.createProgressIfNecessary(userId, achievementId);
             userProgressionInAchievement(userId, achievementId, achievement);
-        }else{
+        } else {
             userProgressionInAchievement(userId, achievementId, achievement);
         }
     }
@@ -44,9 +44,9 @@ public class CollectorAchievementHandler implements EventHandler<GoalSetEvent> {
         AchievementProgress achievementProgressByUser = achievementService.getProgress(userId, achievementId);
         achievementProgressByUser.increment();
         achievementService.saveProgress(achievementProgressByUser);
-        if(achievementProgressByUser.getCurrentPoints() == achievement.getPoints()){
+        if (achievementProgressByUser.getCurrentPoints() == achievement.getPoints()) {
             achievementService.giveAchievement(userId, achievement);
-            log.info("The user: {} received an achievement {} ",userId,achievementTitle);
+            log.info("The user: {} received an achievement {} ", userId, achievementTitle);
         }
     }
 
