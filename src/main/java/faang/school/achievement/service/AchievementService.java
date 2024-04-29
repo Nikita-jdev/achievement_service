@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AchievementService {
+
     private final UserAchievementRepository userAchievementRepository;
+
     private final AchievementProgressRepository achievementProgressRepository;
 
     public boolean hasAchievement(long userId, long achievementId) {
@@ -35,5 +37,18 @@ public class AchievementService {
         userAchievement.setAchievement(achievement);
         userAchievement.setUserId(userId);
         UserAchievement save = userAchievementRepository.save(userAchievement);
+    }
+
+    public void achievementProcess(long userId, Achievement achievement){
+        long achievementId = achievement.getId();
+
+        if(!hasAchievement(userId, achievementId)){
+            createProgressIfNecessary(userId, achievementId);
+            AchievementProgress progress = getProgress(userId, achievementId);
+            progress.increment();
+            if (progress.getCurrentPoints() >= achievement.getPoints()) {
+                giveAchievement(userId, achievement);
+            }
+        }
     }
 }

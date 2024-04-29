@@ -23,14 +23,7 @@ public class WhoeverAchievementHandler implements EventHandler<SkillAcquiredEven
     @Transactional
     @Async("executorService")
     public void handle(SkillAcquiredEvent event) {
-        Achievement achievement = achievementCache.get(achievementName).orElseThrow(() -> new IllegalArgumentException("not found achievement"));
-        if (!achievementService.hasAchievement(event.getReceiverId(), achievement.getId())) {
-            achievementService.createProgressIfNecessary(event.getReceiverId(), achievement.getId());
-            AchievementProgress progress = achievementService.getProgress(event.getReceiverId(), achievement.getId());
-            progress.increment();
-            if (progress.getCurrentPoints() >= achievement.getPoints()) {
-                achievementService.giveAchievement(event.getReceiverId(), achievement);
-            }
-        }
+        Achievement achievement = achievementCache.get(achievementName);
+        achievementService.achievementProcess(event.getReceiverId(), achievement);
     }
 }
