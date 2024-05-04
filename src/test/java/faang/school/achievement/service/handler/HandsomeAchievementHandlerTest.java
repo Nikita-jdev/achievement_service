@@ -38,7 +38,7 @@ public class HandsomeAchievementHandlerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        ReflectionTestUtils.setField(handsomeAchievementHandler, "profileAchievementName", "HANDSOME");
+        ReflectionTestUtils.setField(handsomeAchievementHandler, "achievementTitle", "HANDSOME");
 
         progressPoints = 1;
         expectedPoints = progressPoints + 1;
@@ -57,7 +57,7 @@ public class HandsomeAchievementHandlerTest {
         when(achievementService.hasAchievement(anyLong(), anyLong())).thenReturn(false);
         when(achievementService.getProgress(anyLong(), anyLong())).thenReturn(achievementProgress);
 
-        handsomeAchievementHandler.handle(new EventProfilePic());
+        handsomeAchievementHandler.handle(new EventProfilePic(), 1);
 
         assertEquals(expectedPoints, achievementProgress.getCurrentPoints());
         verify(achievementCache, times(1)).get(anyString());

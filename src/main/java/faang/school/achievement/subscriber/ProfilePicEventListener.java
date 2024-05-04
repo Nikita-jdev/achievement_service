@@ -21,7 +21,7 @@ public class ProfilePicEventListener implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             EventProfilePic eventProfilePic = objectMapper.readValue(message.getBody(), EventProfilePic.class);
-            handsomeAchievementHandler.handle(eventProfilePic);
+            handsomeAchievementHandler.handle(eventProfilePic, eventProfilePic.getUserId());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
