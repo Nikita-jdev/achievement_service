@@ -1,9 +1,8 @@
 package faang.school.achievement.cache;
 
 import faang.school.achievement.model.Achievement;
-import faang.school.achievement.model.Rarity;
 import faang.school.achievement.repository.AchievementRepository;
-
+import faang.school.achievement.model.Rarity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -80,5 +79,4 @@ public class AchievementCacheTest {
         field.setAccessible(true);
         field.set(object, value);
     }
-
 }
