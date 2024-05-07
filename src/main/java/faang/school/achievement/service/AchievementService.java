@@ -1,5 +1,6 @@
 package faang.school.achievement.service;
 
+import faang.school.achievement.cache.AchievementCache;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
@@ -15,8 +16,31 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class AchievementService {
-    private final UserAchievementRepository userAchievementRepository;
     private final AchievementProgressRepository achievementProgressRepository;
+    private final UserAchievementRepository userAchievementRepository;
+    private final AchievementCache achievementCache;
+
+    public void workWithAchievement(long userId, String achievementTitle) {
+        Achievement achievement = achievementCache.get(achievementTitle)
+                .orElseThrow(() -> new EntityNotFoundException("Achievement not found"));
+        long achievementId = achievement.getId();
+        if (!hasAchievement(userId, achievementId)) {
+            createProgressIfNecessary(userId, achievementId);
+            userProgressionInAchievement(userId, achievementId, achievement, achievementTitle);
+        } else {
+            userProgressionInAchievement(userId, achievementId, achievement, achievementTitle);
+        }
+    }
+
+    private void userProgressionInAchievement(Long userId, Long achievementId, Achievement achievement, String achievementTitle) {
+        AchievementProgress achievementProgressByUser = getProgress(userId, achievementId);
+        achievementProgressByUser.increment();
+        saveProgress(achievementProgressByUser);
+        if (achievementProgressByUser.getCurrentPoints() == achievement.getPoints()) {
+            giveAchievement(userId, achievement);
+            log.info("The user: {} received an achievement {} ", userId, achievementTitle);
+        }
+    }
 
     @Transactional(readOnly = true)
     public boolean hasAchievement(long userId, long achievementId) {

@@ -1,5 +1,6 @@
 package faang.school.achievement.service;
 
+import faang.school.achievement.cache.AchievementCache;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
@@ -11,12 +12,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
 
 import static faang.school.achievement.model.Rarity.COMMON;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AchievementServiceTest {
@@ -24,8 +27,40 @@ public class AchievementServiceTest {
     private UserAchievementRepository userAchievementRepository;
     @Mock
     private AchievementProgressRepository achievementProgressRepository;
+    @Mock
+    private AchievementCache achievementCache;
     @InjectMocks
     private AchievementService achievementService;
+
+    @Value("${achievement.collector}")
+    private String achievementTitle;
+
+    @Test
+    void workWithAchievement() {
+        long userId = 1;
+        long achievementId = 2;
+        Achievement firstAchievement = Achievement.builder()
+                .id(2)
+                .title("collector")
+                .points(50)
+                .rarity(COMMON)
+                .description("description")
+                .build();
+        AchievementProgress achievementProgress = AchievementProgress.builder()
+                .userId(userId)
+                .id(3L)
+                .achievement(firstAchievement)
+                .currentPoints(0)
+                .build();
+
+        when(achievementCache.get(achievementTitle)).thenReturn(Optional.of(Achievement.builder()
+                .title(achievementTitle)
+                .id(2).build()));
+        when(achievementProgressRepository.findByUserIdAndAchievementId(userId,achievementId))
+                .thenReturn(Optional.of(achievementProgress));
+
+        assertDoesNotThrow(() -> achievementService.workWithAchievement(userId,achievementTitle));
+    }
 
     @Test
     void hasAchievementTestTrue() {
