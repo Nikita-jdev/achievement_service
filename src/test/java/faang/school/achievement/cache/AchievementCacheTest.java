@@ -61,17 +61,17 @@ public class AchievementCacheTest {
         cachedAchievements.put("Title", achievement);
         setPrivateField(achievementCache, "achievements", cachedAchievements);
 
-        Optional<Achievement> result = achievementCache.get("Title");
+        Achievement result = achievementCache.get("Title");
 
-        assertTrue(result.isPresent());
-        assertEquals(achievement, result.get());
+        assertTrue(result != null);
+        assertEquals(achievement, result);
     }
 
     @Test
     public void testGetNonExistingAchievement() {
-        Optional<Achievement> result = achievementCache.get("Non-existent Title");
+        Achievement result = achievementCache.get("Non-existent Title");
 
-        assertFalse(result.isPresent());
+        assertFalse(result != null);
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {

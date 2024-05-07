@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
-public class WhoeverAchievementHandler implements EventHandler<SkillAcquiredEvent> {
+public class SkillFullAchievementHandler implements EventHandler<SkillAcquiredEvent> {
     private final AchievementCache achievementCache;
     private final AchievementService achievementService;
     @Value("${achievement.skill.name}")
