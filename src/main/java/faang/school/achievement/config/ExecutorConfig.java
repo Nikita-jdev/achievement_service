@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 
 @Configuration
 public class ExecutorConfig {
-    @Value("${executor.threadPolls.size}")
+    @Value("${executor.threadPoll.size}")
     private int threadPollSize;
 
     @Bean
