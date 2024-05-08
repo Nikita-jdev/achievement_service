@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class AchievementCache {
         achievementRepository.findAll().forEach(achievement -> achievements.put(achievement.getTitle(), achievement));
     }
   
-    public Optional<Achievement> get(String achievementTitle) {
-        return Optional.ofNullable(achievements.get(achievementTitle));
+    public Achievement get(String achievementTitle) {
+        return achievements.get(achievementTitle);
     }
 }

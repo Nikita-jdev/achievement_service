@@ -53,13 +53,10 @@ public class AchievementServiceTest {
                 .currentPoints(0)
                 .build();
 
-        when(achievementCache.get(achievementTitle)).thenReturn(Optional.of(Achievement.builder()
-                .title(achievementTitle)
-                .id(2).build()));
-        when(achievementProgressRepository.findByUserIdAndAchievementId(userId,achievementId))
+        when(achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId))
                 .thenReturn(Optional.of(achievementProgress));
 
-        assertDoesNotThrow(() -> achievementService.workWithAchievement(userId,achievementTitle));
+        assertDoesNotThrow(() -> achievementService.workWithAchievement(userId, achievementTitle, firstAchievement));
     }
 
     @Test
@@ -107,20 +104,21 @@ public class AchievementServiceTest {
     }
 
     @Test
-    void saveProgress(){
+    void saveProgress() {
         AchievementProgress achievementProgress = getAchievementProgress();
 
         achievementService.saveProgress(achievementProgress);
         verify(achievementProgressRepository).save(achievementProgress);
     }
+
     @Test
-    void giveAchievementTest(){
+    void giveAchievementTest() {
         Achievement achievement = getAchievement();
         long userId = 1;
         UserAchievement userAchievement = UserAchievement.builder()
                 .userId(userId)
                 .achievement(achievement).build();
-        achievementService.giveAchievement(userId,achievement);
+        achievementService.giveAchievement(userId, achievement);
         verify(userAchievementRepository).save(userAchievement);
     }
 

@@ -1,6 +1,5 @@
 package faang.school.achievement.service;
 
-import faang.school.achievement.cache.AchievementCache;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
@@ -18,11 +17,9 @@ import org.springframework.stereotype.Service;
 public class AchievementService {
     private final AchievementProgressRepository achievementProgressRepository;
     private final UserAchievementRepository userAchievementRepository;
-    private final AchievementCache achievementCache;
 
-    public void workWithAchievement(long userId, String achievementTitle) {
-        Achievement achievement = achievementCache.get(achievementTitle)
-                .orElseThrow(() -> new EntityNotFoundException("Achievement not found"));
+
+    public void workWithAchievement(long userId, String achievementTitle, Achievement achievement) {
         long achievementId = achievement.getId();
         if (!hasAchievement(userId, achievementId)) {
             createProgressIfNecessary(userId, achievementId);

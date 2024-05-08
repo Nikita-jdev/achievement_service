@@ -1,8 +1,8 @@
 package faang.school.achievement.cache;
 
 import faang.school.achievement.model.Achievement;
-import faang.school.achievement.repository.AchievementRepository;
 import faang.school.achievement.model.Rarity;
+import faang.school.achievement.repository.AchievementRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,12 +10,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -61,17 +63,16 @@ public class AchievementCacheTest {
         cachedAchievements.put("Title", achievement);
         setPrivateField(achievementCache, "achievements", cachedAchievements);
 
-        Optional<Achievement> result = achievementCache.get("Title");
+        Achievement result = achievementCache.get("Title");
 
-        assertTrue(result.isPresent());
-        assertEquals(achievement, result.get());
+        assertEquals(achievement, achievementCache.get("Title"));
     }
 
     @Test
     public void testGetNonExistingAchievement() {
-        Optional<Achievement> result = achievementCache.get("Non-existent Title");
+        Achievement result = achievementCache.get("Non-existent Title");
 
-        assertFalse(result.isPresent());
+        assertEquals(null, achievementCache.get("Title"));
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {

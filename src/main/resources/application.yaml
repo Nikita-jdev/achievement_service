@@ -42,4 +42,4 @@ thread-pool:
   size: 12
 
 achievement:
-  collector: collector
+  collector: COLLECTOR
