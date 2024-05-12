@@ -22,7 +22,7 @@ public class AchievementCache {
         achievementRepository.findAll().forEach(achievement -> achievements.put(achievement.getTitle(), achievement));
     }
 
-    public Optional<Achievement> get(String achievementTitle) {
-        return Optional.ofNullable(achievements.get(achievementTitle));
+    public Achievement get(String achievementTitle) {
+        return achievements.get(achievementTitle);
     }
 }
