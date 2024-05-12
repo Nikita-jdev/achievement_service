@@ -1,25 +1,31 @@
 package faang.school.achievement.service;
 
 import faang.school.achievement.cache.AchievementCache;
+import faang.school.achievement.event.SkillAcquiredEvent;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
 import faang.school.achievement.repository.AchievementProgressRepository;
 import faang.school.achievement.repository.UserAchievementRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Value;
-
 import java.util.Optional;
-
 import static faang.school.achievement.model.Rarity.COMMON;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class AchievementServiceTest {
@@ -139,5 +145,3 @@ public class AchievementServiceTest {
                 .description("description")
                 .build();
     }
-
-}

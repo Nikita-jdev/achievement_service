@@ -63,8 +63,6 @@ public class AchievementCacheTest {
         cachedAchievements.put("Title", achievement);
         setPrivateField(achievementCache, "achievements", cachedAchievements);
 
-        Achievement result = achievementCache.get("Title");
-
         assertEquals(achievement, achievementCache.get("Title"));
     }
 

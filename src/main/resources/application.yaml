@@ -26,6 +26,7 @@ spring:
         follower: follower_channel
         goal_set_channel:
           name: goal_set_channel
+        skill_channel: skill_channel
 
 server:
   port: 8085
@@ -42,4 +43,6 @@ thread-pool:
   size: 12
 
 achievement:
-  collector: COLLECTOR
+  skill:
+    name: SKILLFUL
+    collector: COLLECTOR
