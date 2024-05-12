@@ -4,25 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.achievement.event.GoalSetEvent;
 import faang.school.achievement.handler.CollectorAchievementHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.Message;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class GoalEventListener extends AbstractEventListener<GoalSetEvent> {
-    @Autowired
-    private final CollectorAchievementHandler collectorAchievementHandler;
-
     public GoalEventListener(ObjectMapper objectMapper, CollectorAchievementHandler collectorAchievementHandler) {
-        super(objectMapper);
+        super(objectMapper, GoalSetEvent.class);
         this.collectorAchievementHandler = collectorAchievementHandler;
     }
 
+    private final CollectorAchievementHandler collectorAchievementHandler;
+
     @Override
-    public void onMessage(Message message, byte[] pattern) {
-        GoalSetEvent event = convert(message.getBody(), GoalSetEvent.class);
+    public void process(GoalSetEvent event) {
         collectorAchievementHandler.handle(event);
-        log.info("event processed successfully {}", event);
     }
 }

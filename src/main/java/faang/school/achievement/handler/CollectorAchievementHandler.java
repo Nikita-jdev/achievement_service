@@ -7,6 +7,7 @@ import faang.school.achievement.service.AchievementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +18,14 @@ public class CollectorAchievementHandler implements EventHandler<GoalSetEvent> {
 
     private final AchievementService achievementService;
     private final AchievementCache achievementCache;
-    @Value("${achievement.collector}")
+    @Value("${achievement.skill.collector}")
     private String achievementTitle;
 
     @Override
     @Transactional
+    @Async("executorService")
     public void handle(GoalSetEvent goalSetEvent) {
         Achievement achievement = achievementCache.get(achievementTitle);
-        long userId = goalSetEvent.getUserId();
-        achievementService.workWithAchievement(userId, achievementTitle,achievement);
+        achievementService.workWithAchievement(goalSetEvent.getUserId(), achievementTitle,achievement);
     }
 }
