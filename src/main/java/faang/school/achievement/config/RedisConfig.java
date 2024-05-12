@@ -1,6 +1,5 @@
 package faang.school.achievement.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import faang.school.achievement.listener.SkillEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +18,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
     private final SkillEventListener skillEventListener;
 
-    private final ObjectMapper objectMapper;
     @Value("${spring.data.redis.port}")
     private int port;
     @Value("${spring.data.redis.host}")
     private String host;
     @Value("${spring.data.redis.channel.skill_channel}")
     private String skillChannel;
+    @Value("${spring.data.redis.channel.goal_set_channel.name}")
+    private String goalSetChannel;
 
     @Bean
     public JedisConnectionFactory redisConnectionFactory(){
@@ -48,6 +48,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory());
         container.addMessageListener(skillMessageListenerAdapter(), skillChannel());
+        container.addMessageListener(new MessageListenerAdapter(goalSetChannel), new ChannelTopic(goalSetChannel));
         return container;
     }
 

@@ -1,4 +1,4 @@
-package faang.school.achievement.config;
+package faang.school.achievement.config.context;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,12 +8,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
-public class ExecutorConfig {
-    @Value("${executor.threadPoll.size}")
-    private int threadPollSize;
+public class ExecutorPool {
+
+    @Value("${thread-pool.size}")
+    private int poolSize;
 
     @Bean
-    public ExecutorService executorService(){
-        return Executors.newFixedThreadPool(threadPollSize);
+    public ExecutorService executorService() {
+        return Executors.newFixedThreadPool(poolSize);
     }
 }

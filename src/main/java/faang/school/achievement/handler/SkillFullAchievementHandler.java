@@ -21,6 +21,6 @@ public class SkillFullAchievementHandler implements EventHandler<SkillAcquiredEv
     @Transactional
     public void handle(SkillAcquiredEvent event) {
         Achievement achievement = achievementCache.get(achievementName);
-        achievementService.achievementProcess(event.getReceiverId(), achievement);
+        achievementService.workWithAchievement(event.getReceiverId(), achievementName, achievement);
     }
 }

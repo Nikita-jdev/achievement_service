@@ -1,21 +1,28 @@
 package faang.school.achievement.service;
 
-import faang.school.achievement.event.SkillAcquiredEvent;
+import faang.school.achievement.cache.AchievementCache;
 import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
 import faang.school.achievement.repository.AchievementProgressRepository;
 import faang.school.achievement.repository.UserAchievementRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Optional;
+
+import static faang.school.achievement.model.Rarity.COMMON;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class AchievementServiceTest {
@@ -23,65 +30,116 @@ public class AchievementServiceTest {
     private UserAchievementRepository userAchievementRepository;
     @Mock
     private AchievementProgressRepository achievementProgressRepository;
+    @Mock
+    private AchievementCache achievementCache;
     @InjectMocks
     private AchievementService achievementService;
-    private Achievement achievement;
-    private SkillAcquiredEvent event;
 
+    @Value("${achievement.collector}")
+    private String achievementTitle;
 
-    @BeforeEach
-    public void setup() {
-        achievement = new Achievement();
-        achievement.setId(1L);
+    @Test
+    void workWithAchievement() {
+        long userId = 1;
+        long achievementId = 2;
+        Achievement firstAchievement = Achievement.builder()
+                .id(2)
+                .title("collector")
+                .points(50)
+                .rarity(COMMON)
+                .description("description")
+                .build();
+        AchievementProgress achievementProgress = AchievementProgress.builder()
+                .userId(userId)
+                .id(3L)
+                .achievement(firstAchievement)
+                .currentPoints(0)
+                .build();
 
-        event = new SkillAcquiredEvent();
-        event.setAuthorId(1L);
-        event.setReceiverId(2L);
-        event.setSkillId(3L);
+        when(achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId))
+                .thenReturn(Optional.of(achievementProgress));
+
+        assertDoesNotThrow(() -> achievementService.workWithAchievement(userId, achievementTitle, firstAchievement));
     }
 
     @Test
-    public void testHasAchievementSuccess() {
-        Mockito.when(userAchievementRepository.existsByUserIdAndAchievementId(event.getReceiverId(), achievement.getId())).thenReturn(true);
-        boolean result = achievementService.hasAchievement(2L, 1L);
-        Mockito.verify(userAchievementRepository, Mockito.times(1)).existsByUserIdAndAchievementId(2L, 1L);
-        Assertions.assertTrue(result);
+    void hasAchievementTestTrue() {
+        long userId = 1;
+        long achievementId = 2;
+
+        when(userAchievementRepository.existsByUserIdAndAchievementId(userId, achievementId)).thenReturn(true);
+        assertTrue(achievementService.hasAchievement(userId, achievementId));
     }
 
     @Test
-    public void testHasAchievementFail() {
-        Mockito.when(userAchievementRepository.existsByUserIdAndAchievementId(event.getReceiverId(), achievement.getId())).thenReturn(false);
-        boolean result = achievementService.hasAchievement(2L, 1L);
-        Mockito.verify(userAchievementRepository, Mockito.times(1)).existsByUserIdAndAchievementId(2L, 1L);
-        Assertions.assertFalse(result);
+    void hasAchievementTestFalse() {
+        long userId = 1;
+        long achievementId = 2;
+
+        when(userAchievementRepository.existsByUserIdAndAchievementId(userId, achievementId)).thenReturn(false);
+        assertFalse(achievementService.hasAchievement(userId, achievementId));
     }
 
     @Test
-    public void getProgressSuccess() {
-        AchievementProgress achievementProgress = new AchievementProgress();
-        achievementProgress.setId(1L);
-        achievementProgress.setAchievement(achievement);
-        achievementProgress.setUserId(2L);
-        achievementProgress.setCurrentPoints(5);
+    void createProgressIfNecessaryTest() {
+        long userId = 1;
+        long achievementId = 2;
 
-        Mockito.when(achievementProgressRepository.findByUserIdAndAchievementId(event.getReceiverId(), achievement.getId())).thenReturn(Optional.of(achievementProgress));
-
-        AchievementProgress result = achievementService.getProgress(2L, 1L);
-
-        Mockito.verify(achievementProgressRepository, Mockito.times(1)).findByUserIdAndAchievementId(2L, 1L);
-
-        Assertions.assertEquals(achievementProgress, result);
+        assertDoesNotThrow(() -> achievementService.createProgressIfNecessary(userId, achievementId));
     }
 
     @Test
-    public void testSaveUserAchievementSuccess() {
-        UserAchievement userAchievement = new UserAchievement();
-        userAchievement.setUserId(2L);
-        userAchievement.setAchievement(achievement);
+    void getProgressTest() {
+        long userId = 1;
+        long achievementId = 2;
+        AchievementProgress achievementProgress = getAchievementProgress();
+        when(achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId)).thenReturn(Optional.of(achievementProgress));
 
-        Mockito.when(userAchievementRepository.save(userAchievement)).thenReturn(userAchievement);
-        UserAchievement save = userAchievementRepository.save(userAchievement);
-        Mockito.verify(userAchievementRepository, Mockito.times(1)).save(userAchievement);
-        Assertions.assertEquals(save, userAchievement);
+        assertDoesNotThrow(() -> achievementService.getProgress(userId, achievementId));
+    }
+
+    @Test
+    void getProgressTestNotFoundEntity() {
+        long userId = 1;
+        long achievementId = 2;
+
+        assertThrows(EntityNotFoundException.class, () -> achievementService.getProgress(userId, achievementId));
+    }
+
+    @Test
+    void saveProgress() {
+        AchievementProgress achievementProgress = getAchievementProgress();
+
+        achievementService.saveProgress(achievementProgress);
+        verify(achievementProgressRepository).save(achievementProgress);
+    }
+
+    @Test
+    void giveAchievementTest() {
+        Achievement achievement = getAchievement();
+        long userId = 1;
+        UserAchievement userAchievement = UserAchievement.builder()
+                .userId(userId)
+                .achievement(achievement).build();
+        achievementService.giveAchievement(userId, achievement);
+        verify(userAchievementRepository).save(userAchievement);
+    }
+
+    private AchievementProgress getAchievementProgress() {
+        return AchievementProgress.builder()
+                .userId(1)
+                .currentPoints(2)
+                .achievement(getAchievement())
+                .build();
+    }
+
+    private Achievement getAchievement() {
+        return Achievement.builder()
+                .id(2)
+                .title("Titile")
+                .points(50)
+                .rarity(COMMON)
+                .description("description")
+                .build();
     }
 }

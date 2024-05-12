@@ -24,6 +24,8 @@ spring:
       channel:
         achievement: achievement_channel
         follower: follower_channel
+        goal_set_channel:
+          name: goal_set_channel
         skill_channel: skill_channel
 
 server:
@@ -37,10 +39,10 @@ project-service:
   host: localhost
   port: 8082
 
+thread-pool:
+  size: 12
+
 achievement:
   skill:
     name: SKILLFUL
-
-executor:
-  threadPoll:
-    size: 5
+    collector: COLLECTOR

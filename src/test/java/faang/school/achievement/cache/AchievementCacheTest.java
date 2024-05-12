@@ -10,12 +10,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -61,17 +63,14 @@ public class AchievementCacheTest {
         cachedAchievements.put("Title", achievement);
         setPrivateField(achievementCache, "achievements", cachedAchievements);
 
-        Achievement result = achievementCache.get("Title");
-
-        assertTrue(result != null);
-        assertEquals(achievement, result);
+        assertEquals(achievement, achievementCache.get("Title"));
     }
 
     @Test
     public void testGetNonExistingAchievement() {
         Achievement result = achievementCache.get("Non-existent Title");
 
-        assertFalse(result != null);
+        assertEquals(null, achievementCache.get("Title"));
     }
 
     private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
@@ -79,5 +78,4 @@ public class AchievementCacheTest {
         field.setAccessible(true);
         field.set(object, value);
     }
-
 }
