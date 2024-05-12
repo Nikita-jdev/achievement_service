@@ -18,6 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
     private final SkillEventListener skillEventListener;
+
     private final ObjectMapper objectMapper;
     @Value("${spring.data.redis.port}")
     private int port;
