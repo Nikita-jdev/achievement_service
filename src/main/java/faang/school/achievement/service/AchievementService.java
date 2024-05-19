@@ -5,6 +5,7 @@ import faang.school.achievement.model.Achievement;
 import faang.school.achievement.model.AchievementProgress;
 import faang.school.achievement.model.UserAchievement;
 import faang.school.achievement.repository.AchievementProgressRepository;
+import faang.school.achievement.repository.AchievementRepository;
 import faang.school.achievement.repository.UserAchievementRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,9 @@ import org.springframework.stereotype.Service;
 public class AchievementService {
     private final AchievementProgressRepository achievementProgressRepository;
     private final UserAchievementRepository userAchievementRepository;
+    private final AchievementRepository achievementRepository;
 
-
+    @Transactional
     public void workWithAchievement(long userId, String achievementTitle, Achievement achievement) {
         long achievementId = achievement.getId();
         if (!hasAchievement(userId, achievementId)) {
@@ -72,5 +74,10 @@ public class AchievementService {
                 .achievement(achievement)
                 .userId(userId)
                 .build());
+    }
+
+    public Achievement getAchievementByName(String title){
+        return achievementRepository.findAchievementByTitle(title)
+                .orElseThrow(() -> new EntityNotFoundException("Achievement with title %s not found"));
     }
 }
