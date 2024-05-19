@@ -4,5 +4,5 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface EventHandler<E> {
     @Async("executorService")
-    public void handle(E event);
+    void handle(E event);
 }

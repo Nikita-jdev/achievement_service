@@ -145,7 +145,7 @@ public class AchievementServiceTest {
         when(achievementProgressRepository.findByUserIdAndAchievementId(userId, achievementId))
                 .thenReturn(Optional.empty());
 
-        Assertions.assertThrows(faang.school.achievement.exception.EntityNotFoundException.class, () -> achievementService.getProgress(userId, achievementId));
+        Assertions.assertThrows(EntityNotFoundException.class, () -> achievementService.getProgress(userId, achievementId));
     }
 
     @Test
