@@ -24,6 +24,9 @@ spring:
       channel:
         achievement: achievement_channel
         follower: follower_channel
+        goal_set_channel:
+          name: goal_set_channel
+        skill_channel: skill_channel
         profile_pic_channel: "profile_pic_channel"
 
 server:
@@ -33,13 +36,16 @@ logging:
   level:
     root: info
 
-achievement:
-  profile_pic:
-    handsome: "HANDSOME"
-
-thread-pool:
-  size: 10
-
 project-service:
   host: localhost
   port: 8082
+
+thread-pool:
+  size: 12
+
+achievement:
+  profile_pic:
+    handsome: HANDSOME
+  skill:
+    name: SKILLFUL
+    collector: COLLECTOR
