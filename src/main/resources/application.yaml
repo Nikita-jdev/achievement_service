@@ -28,6 +28,8 @@ spring:
           name: mentorship_channel
         project_channel:
           name: project_channel
+        comment_channel:
+          name: comment_channel
 
 
 server:
@@ -46,6 +48,7 @@ achievements:
     love_everyone: love_everyone
     sensey: SENSEI
     businessman: BUSINESSMEN
+    expert: EXPERT
 app:
   async:
     executorBeanName: executor
