@@ -28,6 +28,10 @@ spring:
           name: mentorship_channel
         project_channel:
           name: project_channel
+        follower_channel:
+          name: follower_channel
+
+
 
 
 server:
@@ -46,6 +50,7 @@ achievements:
     love_everyone: love_everyone
     sensey: SENSEI
     businessman: BUSINESSMEN
+    blogger: BLOGGER
 app:
   async:
     executorBeanName: executor
